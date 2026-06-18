@@ -39,7 +39,7 @@ final class CompraModel extends Compra {
   ) {
     double precoFinal = 0;
 
-    if (parcelas == 0) {
+    if (parcelas == 1) {
       if (!presente) {
         precoFinal = camisa.precoBase * quantidade;
       } else {
