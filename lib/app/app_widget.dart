@@ -16,6 +16,7 @@ class _MyAppState extends State<MyApp> {
   late String _modeloSeleccionado = camisa.modelos[0]['imagePath'];
   late String _tamanhoSelecionado = camisa.tamanhosDisponibles[0];
   int _quantidadeSelecionada = 0;
+  bool _embalarPresente = false;
 
   Widget get selectorModelo => RadioGroup<String>(
     groupValue: _modeloSeleccionado,
@@ -159,6 +160,27 @@ class _MyAppState extends State<MyApp> {
                         ),
                       ),
                     ],
+                  ),
+                ],
+              ),
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  Text(
+                    'Embalar para presente ? (+ R\$ ${camisa.valorPresente})',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  Checkbox(
+                    value: _embalarPresente,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _embalarPresente = value!;
+                      });
+                    },
                   ),
                 ],
               ),
