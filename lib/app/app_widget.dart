@@ -14,6 +14,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final camisa = CamisaRepository().camisaModel;
   late String _modeloSeleccionado = camisa.modelos[0]['imagePath'];
+  late String _tamanhoSelecionado = camisa.tamanhosDisponibles[0];
 
   Widget get selectorModelo => RadioGroup<String>(
     groupValue: _modeloSeleccionado,
@@ -34,6 +35,27 @@ class _MyAppState extends State<MyApp> {
           .toList(),
     ),
   );
+
+  Widget get selectorTamanho => DropdownButton<String>(
+    value: _tamanhoSelecionado,
+    icon: const Icon(Icons.arrow_drop_down),
+    underline: const SizedBox(), // Remove a linha preta padrão de baixo
+    style: const TextStyle(
+      color: Colors.black87,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    ),
+    onChanged: (value) {
+      setState(() {
+        _tamanhoSelecionado = value!;
+      });
+    },
+    // Mapeia a lista de strings para os itens visíveis do menu
+    items: camisa.tamanhosDisponibles.map((String valor) {
+      return DropdownMenuItem<String>(value: valor, child: Text(valor));
+    }).toList(),
+  );
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -78,6 +100,18 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  Text("Tamanho : ", style: TextStyle(fontWeight: .w600)),
+                  selectorTamanho,
+                ],
+              ),
+            ),
+            Divider(),
           ],
         ),
       ),
