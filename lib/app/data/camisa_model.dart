@@ -4,7 +4,7 @@ import 'dart:convert';
 abstract class Camisa {
   double precoBase;
   List<String> tamanhosDisponibles;
-  List<Map<String, String>> modelos;
+  List<Map<String, dynamic>> modelos;
   Camisa({
     required this.precoBase,
     required this.tamanhosDisponibles,
@@ -23,10 +23,10 @@ final class CamisaModel extends Camisa {
     final Map<String, dynamic> jsonMap = json.decode(response);
 
     final double precoBaseResponse = jsonMap['precoBase'] as double;
-    final List<Map<String, String>> modelosResponse =
-        List<Map<String, String>>.from(['modelos']);
+    final List<Map<String, dynamic>> modelosResponse =
+        List<Map<String, dynamic>>.from(jsonMap['modelos']);
     final List<String> tamanhosDisponiblesResponse = List<String>.from(
-      jsonMap['tamanhosDisponibles'],
+      jsonMap['tamanhosDisponiveis'],
     );
 
     return CamisaModel(
@@ -34,5 +34,10 @@ final class CamisaModel extends Camisa {
       modelos: modelosResponse,
       tamanhosDisponibles: tamanhosDisponiblesResponse,
     );
+  }
+
+  @override
+  String toString() {
+    return 'preco base : $precoBase tamanhos disponíveis : ${super.tamanhosDisponibles} modelos : ${super.modelos}';
   }
 }
