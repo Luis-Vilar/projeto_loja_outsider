@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:projeto_camiseta_outisder/app/data/camisa_repository.dart';
+import 'package:projeto_camiseta_outisder/app/data/compra_model.dart';
 import 'package:projeto_camiseta_outisder/app/utils/extensions.dart';
 
 class MyApp extends StatefulWidget {
@@ -13,16 +14,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final camisa = CamisaRepository().camisaModel;
-  late String _modeloSeleccionado = camisa.modelos[0]['imagePath'];
+  late String _assetModeloSeleccionado = camisa.modelos[0]['imagePath'];
+  late String _modeloSeleccionado = camisa.modelos[0]['cor'].toString();
   late String _tamanhoSelecionado = camisa.tamanhosDisponibles[0];
-  int _quantidadeSelecionada = 0;
+  int _quantidadeSelecionada = 1;
   bool _embalarPresente = false;
   double _parcelasSelecionada = 1;
-
+  double totalCompra = 0;
   Widget get selectorModelo => RadioGroup<String>(
-    groupValue: _modeloSeleccionado,
+    groupValue: _assetModeloSeleccionado,
     onChanged: (value) => setState(() {
-      _modeloSeleccionado = value!;
+      _assetModeloSeleccionado = value!;
     }),
     child: Column(
       children: camisa.modelos
@@ -33,6 +35,11 @@ class _MyAppState extends State<MyApp> {
                 style: TextStyle(fontSize: 12, fontWeight: .w400),
               ),
               value: modelo['imagePath'],
+              onChanged: (value) => {
+                setState(() {
+                  _modeloSeleccionado = modelo['cor'];
+                }),
+              },
             ),
           )
           .toList(),
@@ -63,6 +70,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double safeWidth = (screenWidth / 2) * 0.95;
+    totalCompra = camisa.precoBase;
+
+    CompraModel compra = CompraModel.factory(
+      camisa,
+      _quantidadeSelecionada,
+      _embalarPresente,
+      _parcelasSelecionada.toInt(),
+      _modeloSeleccionado,
+      _tamanhoSelecionado,
+    );
 
     return MaterialApp(
       home: Scaffold(
@@ -99,7 +116,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 SizedBox(
                   width: safeWidth,
-                  child: Image.asset(_modeloSeleccionado),
+                  child: Image.asset(_assetModeloSeleccionado),
                 ),
               ],
             ),
@@ -133,7 +150,7 @@ class _MyAppState extends State<MyApp> {
                         child: InkWell(
                           child: Icon(Icons.remove, color: Colors.red),
                           onTap: () => setState(() {
-                            if (_quantidadeSelecionada >= 1) {
+                            if (_quantidadeSelecionada > 1) {
                               _quantidadeSelecionada--;
                             }
                           }),
@@ -203,6 +220,7 @@ class _MyAppState extends State<MyApp> {
                   Slider(
                     min: 1,
                     max: camisa.maxParcelas.toDouble(),
+                    divisions: camisa.maxParcelas - 1,
                     value: _parcelasSelecionada,
                     onChanged: (double newValue) => setState(() {
                       _parcelasSelecionada = newValue;
@@ -211,7 +229,75 @@ class _MyAppState extends State<MyApp> {
                 ],
               ),
             ),
-            Divider(),
+            Column(
+              mainAxisSize: .min,
+              mainAxisAlignment: .center,
+              crossAxisAlignment: .center,
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.9,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.blue[100],
+                      border: .all(color: Colors.lightBlue),
+                      borderRadius: .circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Total: ${compra.precoFinal.toBRL()}',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 4.0,
+                        ), // Pequeño espacio entre ambos textos
+                        // Texto del Detalle de Cuotas
+                        Text(
+                          '(${_parcelasSelecionada.toInt()} x de ${(compra.precoFinal / _parcelasSelecionada).toDouble().toBRL()})',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 12),
+                SizedBox(
+                  width: screenWidth * 0.90,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      compra.printCompra();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      elevation: 2.0,
+                      shape:
+                          const StadiumBorder(), // Hace que los bordes sean completamente circulares
+                    ),
+                    child: const Text(
+                      'Finalizar Compra',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight:
+                            FontWeight.w600, // Semi-bold para resaltar el texto
+                        letterSpacing:
+                            0.5, // Pequeño espacio entre letras para legibilidad
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
