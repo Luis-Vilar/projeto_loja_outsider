@@ -17,6 +17,7 @@ class _MyAppState extends State<MyApp> {
   late String _tamanhoSelecionado = camisa.tamanhosDisponibles[0];
   int _quantidadeSelecionada = 0;
   bool _embalarPresente = false;
+  double _parcelasSelecionada = 1;
 
   Widget get selectorModelo => RadioGroup<String>(
     groupValue: _modeloSeleccionado,
@@ -181,6 +182,31 @@ class _MyAppState extends State<MyApp> {
                         _embalarPresente = value!;
                       });
                     },
+                  ),
+                ],
+              ),
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: .start,
+                    children: [
+                      Text(
+                        'Parcelas : ${_parcelasSelecionada.toInt()} x',
+                        style: TextStyle(fontWeight: .w500, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    min: 1,
+                    max: camisa.maxParcelas.toDouble(),
+                    value: _parcelasSelecionada,
+                    onChanged: (double newValue) => setState(() {
+                      _parcelasSelecionada = newValue;
+                    }),
                   ),
                 ],
               ),
