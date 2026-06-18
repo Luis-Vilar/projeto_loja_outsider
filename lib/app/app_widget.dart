@@ -15,6 +15,7 @@ class _MyAppState extends State<MyApp> {
   final camisa = CamisaRepository().camisaModel;
   late String _modeloSeleccionado = camisa.modelos[0]['imagePath'];
   late String _tamanhoSelecionado = camisa.tamanhosDisponibles[0];
+  int _quantidadeSelecionada = 0;
 
   Widget get selectorModelo => RadioGroup<String>(
     groupValue: _modeloSeleccionado,
@@ -108,6 +109,57 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   Text("Tamanho : ", style: TextStyle(fontWeight: .w600)),
                   selectorTamanho,
+                ],
+              ),
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  Text("Quantidade : ", style: TextStyle(fontWeight: .w600)),
+                  Row(
+                    children: [
+                      Ink(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.red, width: 1.5),
+                          color: Colors
+                              .transparent, // Cambia si quieres fondo con color
+                        ),
+                        child: InkWell(
+                          child: Icon(Icons.remove, color: Colors.red),
+                          onTap: () => setState(() {
+                            if (_quantidadeSelecionada >= 1) {
+                              _quantidadeSelecionada--;
+                            }
+                          }),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          _quantidadeSelecionada.toString(),
+                          style: TextStyle(fontWeight: .w600),
+                        ),
+                      ),
+                      Ink(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.green, width: 1.5),
+                          color: Colors
+                              .transparent, // Cambia si quieres fondo con color
+                        ),
+                        child: InkWell(
+                          child: Icon(Icons.add, color: Colors.green),
+                          onTap: () => setState(() {
+                            _quantidadeSelecionada++;
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
