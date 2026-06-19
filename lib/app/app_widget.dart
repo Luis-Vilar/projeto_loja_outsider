@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_camiseta_outisder/app/data/camisa_repository.dart';
 import 'package:projeto_camiseta_outisder/app/data/compra_model.dart';
 import 'package:projeto_camiseta_outisder/app/utils/extensions.dart';
+import 'package:projeto_camiseta_outisder/app/view/components/button_compra.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -269,33 +270,8 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 12),
-                SizedBox(
-                  width: screenWidth * 0.90,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      compra.printCompra();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      elevation: 2.0,
-                      shape:
-                          const StadiumBorder(), // Hace que los bordes sean completamente circulares
-                    ),
-                    child: const Text(
-                      'Finalizar Compra',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight:
-                            FontWeight.w600, // Semi-bold para resaltar el texto
-                        letterSpacing:
-                            0.5, // Pequeño espacio entre letras para legibilidad
-                      ),
-                    ),
-                  ),
-                ),
+                ButtonCompraWidget(screenWidth: screenWidth, compra: compra),
               ],
             ),
           ],
